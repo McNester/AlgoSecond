@@ -123,17 +123,24 @@ public class MyLinkedList implements MyList {
 
     @Override
     public void remove(int index) {
+        if (index == 0) {
+            this.head = this.head.next;
+        }
+        if (index == this.size - 1) {
+            this.tail = this.tail.previous;
+        }
+
         this.size--;
     }
 
     @Override
     public void removeFirst() {
-
+        this.head = this.head.next;
     }
 
     @Override
     public void removeLast() {
-
+        this.tail = this.tail.previous;
     }
 
     @Override
@@ -143,21 +150,50 @@ public class MyLinkedList implements MyList {
 
     @Override
     public int indexOf(Object object) {
-        return 0;
+        MyNode node = this.head;
+        for (int i = 0; i < this.size; i++) {
+            if (node.element == object) {
+                return i;
+            }
+            node = node.next;
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object object) {
-        return 0;
+        MyNode node = this.head;
+        int index = -1;
+        for (int i = 0; i < this.size; i++) {
+            if (node.element == object) {
+                index = i;
+            }
+            node = node.next;
+        }
+        return index;
     }
 
     @Override
     public boolean exists(Object object) {
+        MyNode node = this.head;
+        for (int i = 0; i < this.size; i++) {
+            if (node.element == object) {
+                return true;
+            }
+            node = node.next;
+        }
         return false;
+
     }
 
     @Override
     public Object[] toArray() {
+        Object[] arr = new Object[this.size];
+        MyNode node = this.head;
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = node.element;
+            node = node.next;
+        }
         return new Object[this.size];
     }
 
@@ -169,7 +205,7 @@ public class MyLinkedList implements MyList {
 
     @Override
     public int size() {
-        return 0;
+        return this.size;
     }
 
     @Override
