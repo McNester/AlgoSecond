@@ -1,16 +1,17 @@
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class MyLinkedList<T> implements MyList<T> {
-    private MyNode head;
-    private MyNode tail;
+    private MyNode<T> head;
+    private MyNode<T> tail;
     private int size;
 
     private class MyNode<E> {
         private E element;
-        private MyNode next;
-        private MyNode previous;
+        private MyNode<T> next;
+        private MyNode<T> previous;
 
-        public MyNode(E element, MyNode next, MyNode prev) {
+        public MyNode(E element, MyNode<T> next, MyNode<T> prev) {
             this.element = element;
             this.next = next;
             this.previous = prev;
@@ -25,8 +26,8 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     @Override
-    public void add(Object item) {
-        MyNode newNode = new MyNode(item, null, null);
+    public void add(T item) {
+        MyNode<T> newNode = new MyNode<>(item, null, null);
         if (this.head == null) {
             this.head = newNode;
         }
@@ -36,14 +37,14 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     @Override
-    public void set(int index, Object item) {
+    public void set(int index, T item) {
         if (index == 0) {
             this.head.element = item;
         }
         if (index == this.size - 1) {
             this.tail.element = item;
         }
-        MyNode next = head.next;
+        MyNode<T> next = head.next;
         for (int i = 1; i < this.size; i++) {
             if (i == index) {
                 next.element = item;
@@ -53,21 +54,43 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     @Override
-    public void add(int index, Object item) {
+    public void add(int index, T item) {
+        MyNode<T> node = new MyNode<T>(item, null, null);
+        if (index == 0) {
+            node.next = this.head;
+            this.head.previous = node;
+            this.head = node;
+            return;
+        }
+        if (index == this.size - 1) {
+            node.previous = this.tail;
+            this.tail.next = node;
+            this.tail = node;
+            return;
+        }
+        MyNode<T> currNode = head;
+        for (int i = 1; i < this.size; i++) {
+            if (index == i - 1) {
+                node.previous = currNode;
+                currNode.next.previous = node;
+                currNode.next = node;
+            }
+            currNode = currNode.next;
+        }
 
     }
 
     @Override
-    public void addFirst(Object item) {
-        MyNode newNode = new MyNode(item, this.head, null);
+    public void addFirst(T item) {
+        MyNode<T> newNode = new MyNode<>(item, this.head, null);
 
         this.head = newNode;
         this.size++;
     }
 
     @Override
-    public void addLast(Object item) {
-        MyNode newNode = new MyNode(item, null, this.tail);
+    public void addLast(T item) {
+        MyNode<T> newNode = new MyNode<>(item, null, this.tail);
         this.tail = newNode;
         this.size++;
     }
@@ -84,10 +107,10 @@ public class MyLinkedList<T> implements MyList<T> {
             return (T) this.head.element;
         }
 
-        MyNode next = head.next;
+        MyNode<T> next = head.next;
         for (int i = 1; i < this.size; i++) {
             if (i == index) {
-                return (T) next.element;
+                return next.element;
             }
             next = next.next;
         }
@@ -97,12 +120,12 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public T getFirst() {
-        return (T) this.head.element;
+        return this.head.element;
     }
 
     @Override
     public T getLast() {
-        return (T) this.tail.element;
+        return this.tail.element;
     }
 
     @Override
@@ -114,7 +137,7 @@ public class MyLinkedList<T> implements MyList<T> {
             this.tail = this.tail.previous;
         }
 
-        MyNode node = head;
+        MyNode<T> node = head;
         for (int i = 0; i < this.size; i++) {
             if (i == index - 1) {
                 node.next = node.next.next;
@@ -136,14 +159,36 @@ public class MyLinkedList<T> implements MyList<T> {
         this.tail = this.tail.previous;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void sort() {
+        Object[] arr = toArray();
+        Arrays.sort(arr);
 
+        MyNode<T> node = head;
+        for (int i = 0; i < arr.length; i++) {
+            node.element = (T) arr[i];
+            node = node.next;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void sortManually() {
+        Object[] arr = toArray();
+        timSort(arr);
+        MyNode<T> node = head;
+        for (int i = 0; i < arr.length; i++) {
+            node.element = (T) arr[i];
+            node = node.next;
+        }
+    }
+
+    private void timSort(Object[] arr) {
     }
 
     @Override
     public int indexOf(Object object) {
-        MyNode node = this.head;
+        MyNode<T> node = this.head;
         for (int i = 0; i < this.size; i++) {
             if (node.element == object) {
                 return i;
@@ -155,7 +200,7 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public int lastIndexOf(Object object) {
-        MyNode node = this.head;
+        MyNode<T> node = this.head;
         int index = -1;
         for (int i = 0; i < this.size; i++) {
             if (node.element == object) {
@@ -168,7 +213,7 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public boolean exists(Object object) {
-        MyNode node = this.head;
+        MyNode<T> node = this.head;
         for (int i = 0; i < this.size; i++) {
             if (node.element == object) {
                 return true;
@@ -182,7 +227,7 @@ public class MyLinkedList<T> implements MyList<T> {
     @Override
     public Object[] toArray() {
         Object[] arr = new Object[this.size];
-        MyNode node = this.head;
+        MyNode<T> node = this.head;
         for (int i = 0; i < arr.length; i++) {
             arr[i] = node.element;
             node = node.next;
