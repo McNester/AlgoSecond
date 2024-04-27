@@ -24,22 +24,6 @@ public class MyLinkedList implements MyList {
         size = 0;
     }
 
-    private MyNode getCurrentNode() {
-        if (this.head == null) {
-            return null;
-        } else if (this.tail == null) {
-            return this.head;
-        }
-
-        MyNode next = this.head.next;
-        for (int i = 0; i < this.size; i++) {
-            next = next.next;
-        }
-
-        return next;
-
-    }
-
     @Override
     public void add(Object item) {
         MyNode newNode = new MyNode(item, null, null);
