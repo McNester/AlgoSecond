@@ -1,6 +1,9 @@
 import java.util.Arrays;
 import java.util.Iterator;
 
+//TODO: take a look at all the methods, somewhere you will need to return,
+//when you have a check for the head or tail indexes or smth,
+//also check where you need to adjust your starting point in your for statements.
 public class MyLinkedList<T> implements MyList<T> {
     private MyNode<T> head;
     private MyNode<T> tail;
