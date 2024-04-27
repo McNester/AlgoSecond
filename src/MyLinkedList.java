@@ -1,6 +1,6 @@
 import java.util.Iterator;
 
-public class MyLinkedList implements MyList {
+public class MyLinkedList<T> implements MyList<T> {
     private MyNode head;
     private MyNode tail;
     private int size;
@@ -73,21 +73,21 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public Object get(int index) {
+    public T get(int index) {
         if (this.head == null) {
             return null;
         }
         if (index == this.size - 1) {
-            return this.tail.element;
+            return (T) this.tail.element;
         }
         if (index == 0) {
-            return this.head.element;
+            return (T) this.head.element;
         }
 
         MyNode next = head.next;
         for (int i = 1; i < this.size; i++) {
             if (i == index) {
-                return next.element;
+                return (T) next.element;
             }
             next = next.next;
         }
@@ -96,13 +96,13 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public Object getFirst() {
-        return this.head;
+    public T getFirst() {
+        return (T) this.head.element;
     }
 
     @Override
-    public Object getLast() {
-        return this.tail;
+    public T getLast() {
+        return (T) this.tail.element;
     }
 
     @Override
@@ -202,7 +202,17 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public Iterator iterator() {
-        return null;
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public T next() {
+                return null;
+            }
+        };
     }
 }
