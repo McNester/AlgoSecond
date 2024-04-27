@@ -114,6 +114,15 @@ public class MyLinkedList implements MyList {
             this.tail = this.tail.previous;
         }
 
+        MyNode node = head;
+        for (int i = 0; i < this.size; i++) {
+            if (i == index - 1) {
+                node.next = node.next.next;
+                node.next.previous = node.next.previous.previous;
+            }
+            node = node.next;
+        }
+
         this.size--;
     }
 
