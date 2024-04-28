@@ -1,4 +1,8 @@
+package main.java;
+
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 
 //TODO: take a look at all the methods, somewhere you will need to return,
@@ -27,9 +31,22 @@ public class MyLinkedList<T> implements MyList<T> {
         MyNode<T> newNode = new MyNode<>(item, null, null);
         if (this.head == null) {
             this.head = newNode;
+            this.size++;
+            return;
+        }
+        if (this.tail == null){
+            this.tail = newNode;
+            this.head.next = this.tail;
+            this.size++;
+            return;
         }
         newNode.previous = this.tail;
         this.tail = newNode;
+        this.tail.previous.next = this.tail;
+        if(this.size == 2){
+            this.head.next = newNode.previous;
+            newNode.previous.previous = this.head;
+        }
         this.size++;
     }
 
@@ -99,12 +116,12 @@ public class MyLinkedList<T> implements MyList<T> {
         if (this.head == null) {
             return null;
         }
-        if (index == this.size - 1) {
-            return (T) this.tail.element;
-        }
         if (index == 0) {
             return (T) this.head.element;
+        }if (index == this.size - 1) {
+            return (T) this.tail.element;
         }
+
 
         MyNode<T> next = head.next;
         for (int i = 1; i < this.size; i++) {
@@ -163,9 +180,12 @@ public class MyLinkedList<T> implements MyList<T> {
     @SuppressWarnings("unchecked")
     @Override
     public void sort() {
-        Object[] arr = toArray();
-        Arrays.sort(arr);
-
+        Object[]arr = toArray();
+        Arrays.sort(arr, (o1, o2) -> {
+            BigDecimal num1 = toBigDecimal(o1);
+            BigDecimal num2 = toBigDecimal(o2);
+            return num1.compareTo(num2);
+        });
         MyNode<T> node = head;
         for (int i = 0; i < arr.length; i++) {
             node.element = (T) arr[i];
@@ -173,25 +193,28 @@ public class MyLinkedList<T> implements MyList<T> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void sortManually() {
-        Object[] arr = toArray();
-        timSort(arr);
-        MyNode<T> node = head;
-        for (int i = 0; i < arr.length; i++) {
-            node.element = (T) arr[i];
-            node = node.next;
+    private static BigDecimal toBigDecimal(Object obj) {
+        if (obj instanceof BigDecimal) {
+            return (BigDecimal) obj;
+        } else if (obj instanceof String) {
+            try {
+                return new BigDecimal((String) obj);
+            } catch (NumberFormatException e) {
+                // Handle or log error for non-numeric strings
+                return BigDecimal.ZERO; // or some other handling logic
+            }
+        } else if (obj instanceof Number) {
+            return new BigDecimal(obj.toString());
         }
+        return BigDecimal.ZERO; // Default case, can be adjusted based on requirements
     }
 
-    private void timSort(Object[] arr) {
-    }
 
     @Override
     public int indexOf(Object object) {
         MyNode<T> node = this.head;
         for (int i = 0; i < this.size; i++) {
-            if (node.element == object) {
+            if (node.element.equals(object)) {
                 return i;
             }
             node = node.next;
@@ -204,7 +227,7 @@ public class MyLinkedList<T> implements MyList<T> {
         MyNode<T> node = this.head;
         int index = -1;
         for (int i = 0; i < this.size; i++) {
-            if (node.element == object) {
+            if (node.element.equals(object)) {
                 index = i;
             }
             node = node.next;
@@ -216,7 +239,7 @@ public class MyLinkedList<T> implements MyList<T> {
     public boolean exists(Object object) {
         MyNode<T> node = this.head;
         for (int i = 0; i < this.size; i++) {
-            if (node.element == object) {
+            if (node.element.equals(object)) {
                 return true;
             }
             node = node.next;
@@ -228,12 +251,17 @@ public class MyLinkedList<T> implements MyList<T> {
     @Override
     public Object[] toArray() {
         Object[] arr = new Object[this.size];
+        if(this.size == 2){
+            arr[0]=this.head.element;
+            arr[1]=this.tail.element;
+            return arr;
+        }
         MyNode<T> node = this.head;
         for (int i = 0; i < arr.length; i++) {
             arr[i] = node.element;
             node = node.next;
         }
-        return new Object[this.size];
+        return arr;
     }
 
     @Override

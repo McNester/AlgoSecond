@@ -1,21 +1,52 @@
+package main.java;
+
 import java.util.Iterator;
 
 public class MyArrayList<T> implements MyList<T> {
 
+    private Object[] arr = new Object[10];
+    private int size;
+
     @Override
     public void add(T item) {
-        // TODO: Auto-generated method stub
-
+        increaseBuffer();
+        arr[this.size-1] = item;
+    }
+    private void increaseBuffer(){
+        size++;
+        if (size == arr.length){
+            Object[] arr=new Object[size];
+            for (int i = 0; i < arr.length-1; i++) {
+               arr[i] = this.arr[i];
+            }
+            this.arr = arr;
+        }
     }
 
     @Override
     public void add(int index, T item) {
-        // TODO: Auto-generated method stub
+        if (index == 0){
+            addFirst(item);
+            return;
+        }
+        if(index == size-1){
+            addLast(item);
+            return;
+        }
+        if (index == size){
+            add(item);
+            return;
+        }
+        increaseBuffer();
+        for (int i = index; i < size-1; i++) {
+            arr[i+1] = arr[i];
+        }
+        arr[index] = item;
     }
 
     @Override
     public void addFirst(T item) {
-        // TODO: Auto-generated method stub
+
     }
 
     @Override
