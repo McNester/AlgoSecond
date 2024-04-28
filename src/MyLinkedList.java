@@ -22,12 +22,6 @@ public class MyLinkedList<T> implements MyList<T> {
 
     }
 
-    public MyLinkedList() {
-        head = null;
-        tail = null;
-        size = 0;
-    }
-
     @Override
     public void add(T item) {
         MyNode<T> newNode = new MyNode<>(item, null, null);
@@ -43,9 +37,11 @@ public class MyLinkedList<T> implements MyList<T> {
     public void set(int index, T item) {
         if (index == 0) {
             this.head.element = item;
+            return;
         }
         if (index == this.size - 1) {
             this.tail.element = item;
+            return;
         }
         MyNode<T> next = head.next;
         for (int i = 1; i < this.size; i++) {
@@ -135,9 +131,11 @@ public class MyLinkedList<T> implements MyList<T> {
     public void remove(int index) {
         if (index == 0) {
             this.head = this.head.next;
+            return;
         }
         if (index == this.size - 1) {
             this.tail = this.tail.previous;
+            return;
         }
 
         MyNode<T> node = head;
