@@ -1,10 +1,12 @@
 package main.java;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class MyArrayList<T> implements MyList<T> {
 
-    private Object[] arr = new Object[10];
+    private Object[] arr = new Object[0];
     private int size;
 
     @Override
@@ -14,13 +16,11 @@ public class MyArrayList<T> implements MyList<T> {
     }
     private void increaseBuffer(){
         size++;
-        if (size == arr.length){
-            Object[] arr=new Object[size];
-            for (int i = 0; i < arr.length-1; i++) {
-               arr[i] = this.arr[i];
-            }
-            this.arr = arr;
+        Object[] arr=new Object[size];
+        for (int i = 0; i < arr.length-1; i++) {
+           arr[i] = this.arr[i];
         }
+        this.arr = arr;
     }
 
     @Override
@@ -38,97 +38,159 @@ public class MyArrayList<T> implements MyList<T> {
             return;
         }
         increaseBuffer();
-        for (int i = index; i < size-1; i++) {
-            arr[i+1] = arr[i];
+        Object[] arr = new Object[size];
+        for (int i = 0; i < index; i++) {
+            arr[i] = this.arr[i];
         }
-        arr[index] = item;
+        arr[index]=item;
+        for (int i = index; i < size-1; i++) {
+            arr[i+1] = this.arr[i];
+        }
+        this.arr = arr;
     }
 
     @Override
     public void addFirst(T item) {
-
+        increaseBuffer();
+        Object[] arr = new Object[size];
+        for (int i = 0; i < size-1; i++) {
+            arr[i+1] = this.arr[i];
+        }
+        arr[0]=item;
+        this.arr = arr;
     }
 
     @Override
     public void addLast(T item) {
-        // TODO: Auto-generated method stub
+        increaseBuffer();
+        arr[size-1]=item;
     }
 
     @Override
     public void set(int index, T item) {
-        // TODO: Auto-generated method stub
+        arr[index] = item;
     }
 
     @Override
     public T get(int index) {
-        return null;
+        return (T) arr[index];
     }
 
     @Override
     public T getFirst() {
-        // TODO: Auto-generated method stub
-        return null;
+        return (T) arr[0];
     }
 
     @Override
     public T getLast() {
-        // TODO: Auto-generated method stub
-        return null;
+        return (T) arr[size-1];
     }
 
     @Override
     public void remove(int index) {
-        // TODO: Auto-generated method stub
+        Object[] arr = new Object[size-1];
+        for (int i = 0; i < index; i++) {
+            arr[i] = this.arr[i];
+        }
+        for (int i = index; i < size-1; i++) {
+            arr[i] = this.arr[i+1];
+        }
+        this.arr = arr;
+        size--;
     }
 
     @Override
     public void removeFirst() {
-        // TODO: Auto-generated method stub
+        Object[] arr = new Object[size-1];
+        for (int i = 1; i < size; i++) {
+            arr[i-1] = this.arr[i];
+        }
+        this.arr = arr;
+        size--;
     }
 
     @Override
     public void removeLast() {
-        // TODO: Auto-generated method stub
+        Object[] arr = new Object[size-1];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = this.arr[i];
+        }
+        this.arr = arr;
+        size--;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void sort() {
-        // TODO: Auto-generated method stub
+        Arrays.sort(arr, (o1, o2) -> {
+            BigDecimal num1 = toBigDecimal(o1);
+            BigDecimal num2 = toBigDecimal(o2);
+            return num1.compareTo(num2);
+        });
+    }
+
+    private static BigDecimal toBigDecimal(Object obj) {
+        if (obj instanceof BigDecimal) {
+            return (BigDecimal) obj;
+        } else if (obj instanceof String) {
+            try {
+                return new BigDecimal((String) obj);
+            } catch (NumberFormatException e) {
+                // Handle or log error for non-numeric strings
+                return BigDecimal.ZERO; // or some other handling logic
+            }
+        } else if (obj instanceof Number) {
+            return new BigDecimal(obj.toString());
+        }
+        return BigDecimal.ZERO; // Default case, can be adjusted based on requirements
     }
 
     @Override
     public int indexOf(Object object) {
-        // TODO: Auto-generated method stub
-        return 0;
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if(arr[i].equals(object)){
+                return i;
+            }
+        }
+        return index;
     }
 
     @Override
     public int lastIndexOf(Object object) {
-        // TODO: Auto-generated method stub
-        return 0;
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if(arr[i].equals(object)){
+                index = i;
+            }
+        }
+        return index;
     }
 
     @Override
     public boolean exists(Object object) {
-        // TODO: Auto-generated method stub
+        for (int i = 0; i < size; i++) {
+            if (arr[i].equals(object)){
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public Object[] toArray() {
-        // TODO: Auto-generated method stub
-        return null;
+        return arr;
     }
 
     @Override
     public void clear() {
-        // TODO: Auto-generated method stub
+        arr = new Object[0];
+        size = 0;
     }
 
     @Override
     public int size() {
-        // TODO: Auto-generated method stub
-        return 0;
+        return size;
     }
 
     @Override

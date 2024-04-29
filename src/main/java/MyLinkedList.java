@@ -86,10 +86,12 @@ public class MyLinkedList<T> implements MyList<T> {
         }
         MyNode<T> currNode = head;
         for (int i = 1; i < this.size; i++) {
-            if (index == i - 1) {
+            if (index == i) {
                 node.previous = currNode;
                 currNode.next.previous = node;
+                node.next = currNode.next;
                 currNode.next = node;
+                return;
             }
             currNode = currNode.next;
         }
@@ -107,6 +109,7 @@ public class MyLinkedList<T> implements MyList<T> {
     @Override
     public void addLast(T item) {
         MyNode<T> newNode = new MyNode<>(item, null, this.tail);
+        this.tail.next = newNode;
         this.tail = newNode;
         this.size++;
     }
@@ -147,17 +150,17 @@ public class MyLinkedList<T> implements MyList<T> {
     @Override
     public void remove(int index) {
         if (index == 0) {
-            this.head = this.head.next;
+            removeFirst();
             return;
         }
         if (index == this.size - 1) {
-            this.tail = this.tail.previous;
+            removeLast();
             return;
         }
 
         MyNode<T> node = head;
-        for (int i = 0; i < this.size; i++) {
-            if (i == index - 1) {
+        for (int i = 1; i < this.size; i++) {
+            if (i == index) {
                 node.next = node.next.next;
                 node.next.previous = node.next.previous.previous;
             }
@@ -169,12 +172,37 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public void removeFirst() {
+        if (size == 1){
+            clear();
+            return;
+        }
+        if (size == 2){
+            this.head = this.tail;
+            this.head.next = null;
+            this.head.previous = null;
+            size--;
+            return;
+        }
+        this.head.next.next.previous = this.head.next;
         this.head = this.head.next;
+        size--;
     }
 
     @Override
     public void removeLast() {
+        if (size == 1){
+            clear();
+            return;
+        }
+        if (size == 2){
+            this.head.next = null;
+            this.tail = null;
+            size--;
+            return;
+        }
+        this.tail.previous.next = null;
         this.tail = this.tail.previous;
+        size--;
     }
 
     @SuppressWarnings("unchecked")
@@ -245,7 +273,6 @@ public class MyLinkedList<T> implements MyList<T> {
             node = node.next;
         }
         return false;
-
     }
 
     @Override
